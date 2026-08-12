@@ -16,7 +16,7 @@ Each directory is one chapter. Follow them in order, or jump to the one you came
 | [03 — Smoke test](03-smoke-test/) | order an ephemeral building block against it, and assert | meshStack | ~3 min |
 | [04 — CI](04-ci/) | put that test on a nightly cron in GitHub Actions, config included | GitHub | ~2 min |
 | [05 — E2E test](05-e2e-test/) | build the definition from source too, and tear it all down | meshStack | ~4 min |
-| [06 — AI-assisted](06-ai-assisted/) | make a coding agent useful on building block work | — | demo |
+| [06 — AI-assisted](06-ai-assisted/) | write your own building block with an agent, hub layout and all | meshStack | ~2 min |
 
 ## The two modes, up front
 

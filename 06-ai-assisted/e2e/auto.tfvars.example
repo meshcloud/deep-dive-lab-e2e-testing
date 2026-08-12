@@ -1,0 +1,8 @@
+test_context = {
+  workspace   = "my-workspace"
+  name_suffix = "test"
+
+  # The git ref of THIS repository that the meshStack runner clones ../buildingblock from.
+  # Point it at your branch while you are changing the building block.
+  git_ref = "main"
+}
