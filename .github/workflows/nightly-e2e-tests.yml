@@ -1,0 +1,50 @@
+name: Nightly e2e tests
+
+on:
+  # Commented out for the workshop: we only run this by hand. Uncomment to get the nightly run.
+  # schedule:
+  #   - cron: "17 4 * * 1-5"
+  workflow_dispatch:
+
+jobs:
+  e2e:
+    name: e2e
+    runs-on: ubuntu-latest
+
+    # Secrets and configuration live in a GitHub Environment
+    environment: meshstack
+    timeout-minutes: 30
+
+    # These tests create real objects in a shared workspace. Serialise per chapter so a manual
+    # dispatch cannot race the nightly run into a name collision.
+    concurrency:
+      group: smoke-tests
+      cancel-in-progress: false
+
+    # Note this is job-level, not workflow-level, `env`: the `secrets` context is not available in
+    # top-level `env`. A quiet trap — the values would silently arrive empty.
+    env:
+      MESHSTACK_ENDPOINT: ${{ vars.MESHSTACK_ENDPOINT }}
+      MESHSTACK_API_KEY: ${{ vars.MESHSTACK_API_KEY }}
+      MESHSTACK_API_SECRET: ${{ secrets.MESHSTACK_API_SECRET }}
+      TF_IN_AUTOMATION: true
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: opentofu/setup-opentofu@v2
+
+      - name: tofu test
+        run: |
+          tofu -chdir=03-smoke-test init -var-file=smoke.tfvars
+          tofu -chdir=03-smoke-test test -var-file=smoke.tfvars
+
+      # If `tofu test` dies mid-apply it writes what it could not destroy to errored_test.tfstate.
+      # Keep it: without it you are guessing at what leaked in a run you cannot reproduce.
+      - name: Upload errored test state
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: errored-state
+          path: 03-smoke-test/errored_test.tfstate
+          if-no-files-found: ignore

@@ -1,0 +1,20 @@
+# Local credentials and your own workspace identifiers — never commit. Copy the .example files.
+bin/env.sh
+
+# Each chapter's own auto-loaded var-file, holding your workspace and the values you captured from
+# the chapter before it. The `auto.tfvars.example` templates next to them ARE committed. Chapter
+# 04's `smoke.tfvars` is committed on purpose too — it does not end in `.auto.tfvars`, so it is not
+# matched here.
+*.auto.tfvars
+*.auto.tfvars.json
+
+# OpenTofu working files
+.terraform/
+*.tfstate
+*.tfstate.*
+errored_test.tfstate
+
+# Committed on purpose in real repos, ignored here so the workshop works on any platform without
+# a `tofu providers lock -platform=...` dance. Do commit these in your own repos.
+.terraform.lock.hcl
+.terragrunt-cache/
